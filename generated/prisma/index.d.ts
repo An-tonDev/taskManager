@@ -3383,7 +3383,7 @@ export namespace Prisma {
   export type TaskCreateInput = {
     id?: string
     title: string
-    description: string
+    description?: string
     isCompleted?: boolean
     createdAt?: Date | string
     user: UserCreateNestedOneWithoutTasksInput
@@ -3392,7 +3392,7 @@ export namespace Prisma {
   export type TaskUncheckedCreateInput = {
     id?: string
     title: string
-    description: string
+    description?: string
     isCompleted?: boolean
     createdAt?: Date | string
     userId: string
@@ -3419,7 +3419,7 @@ export namespace Prisma {
   export type TaskCreateManyInput = {
     id?: string
     title: string
-    description: string
+    description?: string
     isCompleted?: boolean
     createdAt?: Date | string
     userId: string

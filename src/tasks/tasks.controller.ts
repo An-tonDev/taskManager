@@ -6,6 +6,7 @@ import {
   Patch,
   Delete,
   Param,
+  Req,
   Body,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
@@ -16,31 +17,36 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 
 @Controller('tasks')
 export class TasksController {
-  constructor(private readonly taskService: TasksService) {}
+  constructor(private taskService: TasksService) {}
 
   @Get()
-  getAllTasks(): Task[] {
-    return this.taskService.getAllTasks();
+  getAllTasks(@Req() req){
+    const userId='temp'
+    return this.taskService.getAllTasks(userId);
   }
 
   @Get(':id')
-  getTaskById(@Param(id) id: string): Task {
-    return this.taskService.getTaskByID(id);
+  getTaskById(@Req() req, @Param(id) id: string){
+    const userId='temp'
+    return this.taskService.getTaskByID(userId,id);
   }
 
   @Post()
-  createTask(@Body() CreateTaskDto: CreateTaskDto) : Task {
-    return this.taskService.createTask(CreateTaskDto.title,CreateTaskDto.description);
+  createTask(@Req() req, @Body() dto: CreateTaskDto){
+    const userId='temp'
+    return this.taskService.createTask(userId,dto);
   }
     @Patch(':id')
   updateTask(
     @Param('id') id: string, @Body() UpdateTaskDto:UpdateTaskDto
   ): Task {
+    const userId='temp'
     return this.taskService.updateTask(id, UpdateTaskDto.title, UpdateTaskDto.description, UpdateTaskDto.isCompleted);
   }
 
   @Delete(':id')
   deleteTask(@Param('id') id: string): void {
+    const userId='temp'
     return this.taskService.deleteTask(id);
   }
 

@@ -1,51 +1,61 @@
 /* eslint-disable prettier/prettier */
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Task } from './tasks.model';
-import { v4 as uuid } from 'uuid';
+import { prismaService } from 'src/prisma/prisma.service';
+import { CreateTaskDto } from './dto/create-task.dto';
+import { UpdateTaskDto } from './dto/update-task.dto';
 
 @Injectable()
 export class TasksService {
-  private tasks: Task[] = [];
+ constructor( private prisma:prismaService){}
 
-  getAllTasks(): Task[] {
-    return this.tasks;
+  async getAllTasks(userId:string){
+    return this.prisma.task.findMany({
+      where:{userId},
+      orderBy:{createdAt:'desc'}
+    });
   }
 
-  getTaskByID(id: string): Task {
-    const task = this.tasks.find((t) => t.id === id);
-    if (!task)
-      throw new NotFoundException(`Task with this ID "${id}"  not found`);
+  async getTaskByID(userId:string,id: string){
+    const task = await this.prisma.task.findUnique({where:{id}});
+    if (!task || task.userId !== userId)
+      throw new NotFoundException(`Task with not found`);
     return task;
   }
 
-  createTask(title: string, description?: string): Task {
-    const task: Task = {
-      id: uuid(),
-      title,
-      description,
-      isCompleted: false,
+  async createTask(userId:string, dto:CreateTaskDto) {
+    return this.prisma.task.create({
+  data:{
+      title:dto.title,
+      description: dto.description,
+      userId
+    }
+  })  
     };
-    this.tasks.push(task);
-    return task;
+  
+
+ async updateTask(userId: string, id: string, dto: UpdateTaskDto){
+    const task = await this.prisma.task.findUnique({where:{id}})
+
+    if(!task || task.userId !== userId){
+      throw new NotFoundException('task not found')
+    }
+
+    return this.prisma.task.update({
+      where:{id},
+      data:{
+        title: dto.title ?? task.title,
+        description: dto.description ?? task.description,
+        isCompleted: dto.isCompleted?? task.isCompleted
+      }
+    })
   }
 
-  updateTask(
-    id: string,
-    title?: string,
-    description?: string,
-    isCompleted?: boolean,
-  ): Task {
-    const task = this.getTaskByID(id);
-    if (title) task.title = title;
-    if (description) task.description = description;
-    if (isCompleted !== undefined) task.isCompleted = isCompleted;
-    return task
-  }
-
-  deleteTask(id: string): void {
-    const index = this.tasks.findIndex((t) => t.id === id);
-    if (index === -1)
-      throw new NotFoundException(`task with this ID ${id} not found`);
-    this.tasks.splice(index, 1);
+  async deleteTask(userId:string,id: string){
+    const task = await this.prisma.task.findUnique({where:{id}})
+    if(!task || task.userId !== userId){
+      throw new NotFoundException('task was not found')
+    }
+    await this.prisma.task.delete({where:{id}})
+    return{success:true}
   }
 }
