@@ -7,15 +7,18 @@ import {
   Delete,
   Param,
   Req,
+  UseGuards,
   Body,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
-import { Task } from './tasks.model';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+
 
 
 @Controller('tasks')
+@UseGuards(JwtAuthGuard)
 export class TasksController {
   constructor(private taskService: TasksService) {}
 
@@ -37,17 +40,15 @@ export class TasksController {
     return this.taskService.createTask(userId,dto);
   }
     @Patch(':id')
-  updateTask(
-    @Param('id') id: string, @Body() UpdateTaskDto:UpdateTaskDto
-  ): Task {
+  updateTask(@Req() req,@Param(id) id: string, @Body() dto:UpdateTaskDto){
     const userId='temp'
-    return this.taskService.updateTask(id, UpdateTaskDto.title, UpdateTaskDto.description, UpdateTaskDto.isCompleted);
+    return this.taskService.updateTask(userId,id,dto);
   }
 
   @Delete(':id')
-  deleteTask(@Param('id') id: string): void {
+  deleteTask( @Req() req,@Param('id') id: string){
     const userId='temp'
-    return this.taskService.deleteTask(id);
+    return this.taskService.deleteTask(userId,id);
   }
 
 }
