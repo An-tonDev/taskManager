@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { IsEmail, MinLength, IsNotEmpty } from 'class-validator';
+import { IsEmail, MinLength, IsNotEmpty,Matches } from 'class-validator';
 
 export class Signupdto {
   @IsEmail()
@@ -7,6 +7,9 @@ export class Signupdto {
 
   @IsNotEmpty()
   @MinLength(7)
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,{
+    message:'Password must contain at least one uppercase letter,lowercase letter and a number'
+  })
   password: string;
 }
 
