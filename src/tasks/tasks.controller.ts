@@ -14,6 +14,7 @@ import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { parseUUiDPipe } from 'src/pipes/parse-uuid.pipe';
 
 
 
@@ -24,12 +25,12 @@ export class TasksController {
 
   @Get()
   getAllTasks(@Req() req){
-    const userId='temp'
+    const userId= req.userId
     return this.taskService.getAllTasks(userId);
   }
 
   @Get(':id')
-  getTaskById(@Req() req, @Param(id) id: string){
+  getTaskById(@Req() req, @Param('id',parseUUiDPipe) id: string){
     const userId='temp'
     return this.taskService.getTaskByID(userId,id);
   }
@@ -40,7 +41,7 @@ export class TasksController {
     return this.taskService.createTask(userId,dto);
   }
     @Patch(':id')
-  updateTask(@Req() req,@Param(id) id: string, @Body() dto:UpdateTaskDto){
+  updateTask(@Req() req,@Param('id',parseUUiDPipe) id: string, @Body() dto:UpdateTaskDto){
     const userId='temp'
     return this.taskService.updateTask(userId,id,dto);
   }

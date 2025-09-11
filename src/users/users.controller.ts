@@ -14,12 +14,12 @@ export class UsersController {
   }
 
   @Get(':email')
-  findUser(@Param(email) email: string) {
+  findUser(@Param('email') email: string) {
     return this.userService.findUser(email);
   }
 
   @Delete(':email')
-  deleteUser(@Param(email) email: string) {
+  deleteUser(@Param('email') email: string) {
     return this.userService.deleteUser(email);
   }
 }
