@@ -2,6 +2,7 @@
 import { Controller, Get, Delete, Param,UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { ParseEmailPipe } from 'src/pipes/parse-email.pipes';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard)
@@ -14,12 +15,12 @@ export class UsersController {
   }
 
   @Get(':email')
-  findUser(@Param('email') email: string) {
+  findUser(@Param('email',ParseEmailPipe) email: string) {
     return this.userService.findUser(email);
   }
 
   @Delete(':email')
-  deleteUser(@Param('email') email: string) {
+  deleteUser(@Param('email',ParseEmailPipe) email: string) {
     return this.userService.deleteUser(email);
   }
 }
