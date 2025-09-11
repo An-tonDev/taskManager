@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { prismaService } from 'src/prisma/prisma.service';
+import { prismaService } from 'prisma/prisma.service';
 
 @Injectable()
 export class UsersService {
