@@ -15,6 +15,7 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { parseUUiDPipe } from 'src/pipes/parse-uuid.pipe';
+import * as authTypes from 'src/types/auth.types';
 
 
 
@@ -24,31 +25,31 @@ export class TasksController {
   constructor(private taskService: TasksService) {}
 
   @Get()
-  getAllTasks(@Req() req){
-    const userId= req.userId
+  getAllTasks(@Req() req:authTypes.AuthenticatedRequest){
+    const userId= req.user.id
     return this.taskService.getAllTasks(userId);
   }
 
   @Get(':id')
-  getTaskById(@Req() req, @Param('id',parseUUiDPipe) id: string){
-    const userId='temp'
+  getTaskById(@Req() req: authTypes.AuthenticatedRequest, @Param('id',parseUUiDPipe) id: string){
+    const userId=req.user.id
     return this.taskService.getTaskByID(userId,id);
   }
 
   @Post()
-  createTask(@Req() req, @Body() dto: CreateTaskDto){
-    const userId='temp'
+  createTask(@Req() req:authTypes.AuthenticatedRequest, @Body() dto: CreateTaskDto){
+    const userId=req.user.id
     return this.taskService.createTask(userId,dto);
   }
     @Patch(':id')
-  updateTask(@Req() req,@Param('id',parseUUiDPipe) id: string, @Body() dto:UpdateTaskDto){
-    const userId='temp'
+  updateTask(@Req() req: authTypes.AuthenticatedRequest,@Param('id',parseUUiDPipe) id: string, @Body() dto:UpdateTaskDto){
+    const userId=req.user.id
     return this.taskService.updateTask(userId,id,dto);
   }
 
   @Delete(':id')
-  deleteTask( @Req() req,@Param('id') id: string){
-    const userId='temp'
+  deleteTask( @Req() req: authTypes.AuthenticatedRequest,@Param('id') id: string){
+    const userId=req.user.id
     return this.taskService.deleteTask(userId,id);
   }
 
